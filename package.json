@@ -4,24 +4,24 @@
   "description": "Unofficial Node.js SDK for the PawaPay Merchant API. Simplify Mobile Money integrations (Deposits, Payouts, Refunds) with this type-safe TypeScript client.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [ 
+  "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1", 
-    "prepublishOnly": "npm run build" 
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/michaelNgiri/pawapay-nodejs-sdk.git"
+    "url": "git+https://github.com/michaelNgiri/pawapay-nodejs-sdk.git"
   },
   "bugs": {
     "url": "https://github.com/michaelNgiri/pawapay-nodejs-sdk/issues"
   },
-  "homepage": "https://github.com/michaelNgiri/pawapay-nodejs-sdk#readme", 
+  "homepage": "https://github.com/michaelNgiri/pawapay-nodejs-sdk#readme",
   "keywords": [
     "pawapay",
     "mobile miney payment",
@@ -37,7 +37,7 @@
     "mtn",
     "airtel"
   ],
-  "author": "Michael Ngiri <michaelngiri@gmail.com>", 
+  "author": "Michael Ngiri <michaelngiri@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.9.0",
@@ -47,6 +47,6 @@
     "@types/node": "^22.15.3",
     "@types/uuid": "^10.0.0",
     "dotenv": "^16.5.0",
-    "typescript": "^5.8.3" 
+    "typescript": "^5.8.3"
   }
 }
