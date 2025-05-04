@@ -2,6 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/pawapay-nodejs-sdk.svg)](https://badge.fury.io/js/pawapay-nodejs-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![NPM Downloads](https://img.shields.io/npm/dm/pawapay-nodejs-sdk.svg)](https://www.npmjs.com/package/pawapay-nodejs-sdk)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/pawapay-nodejs-sdk.svg)](https://bundlephobia.com/package/pawapay-nodejs-sdk)
+[![TypeScript](https://img.shields.io/badge/%3C/%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 
 A simple, typed Node.js client library for interacting with the [PawaPay Merchant API](https://docs.pawapay.io/), making it easier to integrate mobile money payments (Deposits, Payouts, Refunds) into your applications.
 
