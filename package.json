@@ -1,6 +1,6 @@
 {
   "name": "pawapay-nodejs-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Unofficial Node.js SDK for the PawaPay Merchant API. Simplify Mobile Money integrations (Deposits, Payouts, Refunds) with this type-safe TypeScript client.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
