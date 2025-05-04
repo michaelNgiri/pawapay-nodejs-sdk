@@ -1,3 +1,39 @@
+# PawaPay Node.js SDK (Unofficial)
+
+[![npm version](https://badge.fury.io/js/pawapay-nodejs-sdk.svg)](https://badge.fury.io/js/pawapay-nodejs-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A simple, typed Node.js client library for interacting with the [PawaPay Merchant API](https://docs.pawapay.io/), making it easier to integrate mobile money payments (Deposits, Payouts, Refunds) into your applications.
+
+## Motivation
+
+When integrating PawaPay into various backend projects, I found there wasn't a readily available, developer-friendly Node.js library to simplify the process. Handling API specifics, request formatting, and response parsing directly can be time-consuming and repetitive.
+
+This SDK aims to bridge that gap by providing a clean, intuitive, and type-safe wrapper around the core PawaPay API functionalities. The goal is to help developers integrate PawaPay quickly and reliably, focusing on their application logic rather than the intricacies of the raw API interaction. I believe many developers facing similar integration challenges can relate and will find this library useful.
+
+## Features
+
+*   **Type-Safe:** Built with TypeScript for excellent developer experience, autocompletion, and compile-time checks.
+*   **Modern Async:** Uses `async/await` for clean asynchronous operations.
+*   **Simplified API Calls:** Wraps core PawaPay endpoints:
+    *   ✅ **Request Deposits:** Fully implemented.
+    *   ⏳ **Request Payouts:** (Planned Feature - Structure exists, implementation pending)
+    *   ⏳ **Request Refunds:** (Planned Feature - Structure exists, implementation pending)
+    *   ⏳ *Status Checks & Callbacks:* (Planned Future Features)
+*   **Automatic ID Generation:** Optionally generates UUIDs for `depositId`, `payoutId`, `refundId` if not provided.
+*   **Automatic Timestamps:** Optionally generates `customerTimestamp` if not provided.
+*   **Basic Error Handling:** Parses common PawaPay API errors for easier debugging.
+*   **Environment Support:** Easily configure for PawaPay `sandbox` or `production` environments.
+
+## Installation
+
+```bash
+npm install pawapay-nodejs-sdk
+# or
+yarn add pawapay-nodejs-sdk
+
+Configuration
+
 You need your PawaPay API Token and to specify the environment (sandbox or production).
 
 ⚠️ Security Warning: NEVER hardcode your apiToken directly in your code. Use environment variables (e.g., via a .env file and the dotenv package) to keep your credentials secure.
