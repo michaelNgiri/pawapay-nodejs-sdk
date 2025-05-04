@@ -46,35 +46,24 @@ Install dotenv (if you haven't already):
 npm install dotenv
 # or
 yarn add dotenv
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+
+
+
 
 Create a .env file in your project root (add it to your .gitignore!):
 
 # .env
 PAWAPAY_API_TOKEN=your_sandbox_or_production_api_token_here
 PAWAPAY_ENV=sandbox # or 'production'
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Env
-IGNORE_WHEN_COPYING_END
+
 
 Load environment variables at the start of your application:
 
 import dotenv from 'dotenv';
 dotenv.config();
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-TypeScript
-IGNORE_WHEN_COPYING_END
+
+
+
 Usage
 1. Import and Initialize Client
 import PawaPayClient from 'pawapay-nodejs-sdk'; // Or: const PawaPayClient = require('pawapay-nodejs-sdk').default;
@@ -94,12 +83,8 @@ const pawaPayClient = new PawaPayClient({
   baseUrl: environment, // Use 'sandbox' or 'production' shortcut
   // Or provide the full URL: baseUrl: 'https://api.sandbox.pawapay.io'
 });
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-TypeScript
-IGNORE_WHEN_COPYING_END
+
+
 2. Requesting a Deposit (✅ Implemented)
 import { PawaPayDepositPayload } from 'pawapay-nodejs-sdk/dist/types'; // Import specific types if needed
 
@@ -144,12 +129,9 @@ async function makeDeposit() {
 }
 
 makeDeposit();
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-TypeScript
-IGNORE_WHEN_COPYING_END
+
+
+
 3. Requesting a Payout (⏳ Planned Feature - Not Yet Implemented)
 import { PawaPayPayoutPayload } from 'pawapay-nodejs-sdk/dist/types';
 
@@ -186,12 +168,10 @@ async function makePayout() {
 }
 
 // makePayout(); // Call when implemented
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-TypeScript
-IGNORE_WHEN_COPYING_END
+
+
+
+
 4. Requesting a Refund (⏳ Planned Feature - Not Yet Implemented)
 import { PawaPayRefundPayload } from 'pawapay-nodejs-sdk/dist/types';
 
@@ -226,12 +206,9 @@ async function makeRefund() {
 }
 
 // makeRefund(); // Call when implemented
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-TypeScript
-IGNORE_WHEN_COPYING_END
+
+
+
 Error Handling
 
 The SDK methods (requestDeposit, requestPayout, requestRefund) return Promises that will reject if:
