@@ -1,18 +1,20 @@
 {
   "name": "pawapay-nodejs-sdk",
-  "version": "1.0.2",
-  "description": "Unofficial Node.js SDK for the PawaPay Merchant API. Simplify Mobile Money integrations (Deposits, Payouts, Refunds) with this type-safe TypeScript client.",
+  "version": "2.0.0",
+  "description": "Unofficial Node.js SDK for the PawaPay Merchant API v2. Simplify Mobile Money integrations (Deposits, Payouts, Refunds, status checks, provider prediction) with this type-safe TypeScript client.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,7 @@
   "homepage": "https://github.com/michaelNgiri/pawapay-nodejs-sdk#readme",
   "keywords": [
     "pawapay",
-    "mobile miney payment",
+    "mobile money payment",
     "mobile money",
     "payments",
     "sdk",
@@ -40,13 +42,14 @@
   "author": "Michael Ngiri <michaelngiri@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.9.0",
-    "uuid": "^11.1.0"
+    "axios": "^1.18.1",
+    "uuid": "^11.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
     "@types/uuid": "^10.0.0",
-    "dotenv": "^16.5.0",
-    "typescript": "^5.8.3"
+    "dotenv": "^17.2.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }

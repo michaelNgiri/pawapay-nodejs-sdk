@@ -1,4 +1,4 @@
-import PawaPayClient from '../src/index'; 
+import PawaPayClient from '../src/index';
 import dotenv from 'dotenv';
 import { PawaPayDepositPayload } from '../src/types';
 
@@ -22,17 +22,15 @@ async function runDepositExample() {
     // depositId: 'provide-one-or-let-sdk-generate', // Optional
     amount: "5.00", // Use string as per docs
     currency: "ZMW",
-    country: "ZMB",
-    correspondent: "MTN_MOMO_ZMB", // Use a valid sandbox correspondent
     payer: {
-      type: "MSISDN",
-      address: {
-        value: "260763456789", // Use a valid PawaPay sandbox number
+      type: "MMO",
+      accountDetails: {
+        phoneNumber: "260763456789", // Use a valid PawaPay sandbox number
+        provider: "MTN_MOMO_ZMB", // Use a valid sandbox provider
       },
     },
-    statementDescription: "SDK Test Deposit",
-    // customerTimestamp: new Date().toISOString(), // Optional
-     metadata: [{fieldName: "testId", fieldValue: "sdk-test-123"}]
+    customerMessage: "SDK Test Deposit",
+    metadata: [{ testId: "sdk-test-123" }],
   };
 
   console.log(`Attempting deposit in ${environment} environment...`);
@@ -40,10 +38,15 @@ async function runDepositExample() {
   try {
     const response = await client.requestDeposit(depositPayload);
     console.log('Deposit Request Response:', response);
-    // Check response.status here ('ACCEPTED', 'REJECTED', etc.)
-    if(response.status === 'REJECTED') {
-        console.warn('Deposit Rejected:', response.rejectionReason);
+
+    if (response.status === 'REJECTED') {
+      console.warn('Deposit Rejected:', response.failureReason);
+      return;
     }
+
+    console.log(`Deposit ${response.depositId} accepted, checking status...`);
+    const status = await client.checkDepositStatus(response.depositId);
+    console.log('Deposit Status:', status);
   } catch (error) {
     console.error('Deposit Failed:', error instanceof Error ? error.message : String(error));
   }

@@ -1,32 +1,34 @@
 # PawaPay Node.js SDK (Unofficial)
 
-[![npm version](https://badge.fury.io/js/pawapay-nodejs-sdk.svg)](https://badge.fury.io/js/pawapay-nodejs-sdk)
+[![npm version](https://img.shields.io/npm/v/pawapay-nodejs-sdk.svg)](https://www.npmjs.com/package/pawapay-nodejs-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![NPM Downloads](https://img.shields.io/npm/dm/pawapay-nodejs-sdk.svg)](https://www.npmjs.com/package/pawapay-nodejs-sdk)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/pawapay-nodejs-sdk.svg)](https://bundlephobia.com/package/pawapay-nodejs-sdk)
 [![TypeScript](https://img.shields.io/badge/%3C/%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 
-A simple, typed Node.js client library for interacting with the [PawaPay Merchant API](https://docs.pawapay.io/), making it easier to integrate mobile money payments (Deposits, Payouts, Refunds) into your applications.
+A simple, typed Node.js client library for interacting with the [PawaPay Merchant API v2](https://docs.pawapay.io/v2/api-reference), making it easier to integrate mobile money payments (Deposits, Payouts, Refunds) into your applications.
+
+> **Upgrading from 1.x?** See [Migrating from 1.x](#migrating-from-1x) — v2.0.0 targets pawaPay's current `/v2` API and is a breaking change.
 
 ## Motivation
 
 When integrating PawaPay into various backend projects, I found there wasn't a readily available, developer-friendly Node.js library to simplify the process. Handling API specifics, request formatting, and response parsing directly can be time-consuming and repetitive.
 
-This SDK aims to bridge that gap by providing a clean, intuitive, and type-safe wrapper around the core PawaPay API functionalities. The goal is to help developers integrate PawaPay quickly and reliably, focusing on their application logic rather than the intricacies of the raw API interaction. I believe many developers facing similar integration challenges can relate and will find this library useful.
+This SDK aims to bridge that gap by providing a clean, intuitive, and type-safe wrapper around the core PawaPay API functionalities. The goal is to help developers integrate PawaPay quickly and reliably, focusing on their application logic rather than the intricacies of the raw API interaction.
 
 ## Features
 
-*   **Type-Safe:** Built with TypeScript for excellent developer experience, autocompletion, and compile-time checks.
-*   **Modern Async:** Uses `async/await` for clean asynchronous operations.
-*   **Simplified API Calls:** Wraps core PawaPay endpoints:
-    *   ✅ **Request Deposits:** Fully implemented.
-    *   ⏳ **Request Payouts:** (Planned Feature - Structure exists, implementation pending)
-    *   ⏳ **Request Refunds:** (Planned Feature - Structure exists, implementation pending)
-    *   ⏳ *Status Checks & Callbacks:* (Planned Future Features)
-*   **Automatic ID Generation:** Optionally generates UUIDs for `depositId`, `payoutId`, `refundId` if not provided.
-*   **Automatic Timestamps:** Optionally generates `customerTimestamp` if not provided.
-*   **Basic Error Handling:** Parses common PawaPay API errors for easier debugging.
-*   **Environment Support:** Easily configure for PawaPay `sandbox` or `production` environments.
+* **Type-Safe:** Built with TypeScript for excellent developer experience, autocompletion, and compile-time checks.
+* **Modern Async:** Uses `async/await` for clean asynchronous operations.
+* **Targets the current pawaPay v2 API:**
+  * Deposits: initiate, check status
+  * Payouts: initiate, check status, cancel an enqueued payout
+  * Refunds: initiate, check status, cancel an enqueued refund
+  * Toolkit: predict the mobile money provider for a phone number, read your active configuration (countries/providers/currencies), read wallet balances
+  * Planned: callbacks & bulk payouts
+* **Automatic ID Generation:** Optionally generates UUIDv4s for `depositId`, `payoutId`, `refundId` if not provided.
+* **Error Handling:** Parses pawaPay's `failureReason` for easier debugging.
+* **Environment Support:** Easily configure for pawaPay `sandbox` or `production` environments.
 
 ## Installation
 
@@ -34,48 +36,50 @@ This SDK aims to bridge that gap by providing a clean, intuitive, and type-safe 
 npm install pawapay-nodejs-sdk
 # or
 yarn add pawapay-nodejs-sdk
+```
 
-Configuration
+## Configuration
 
-You need your PawaPay API Token and to specify the environment (sandbox or production).
+You need your PawaPay API Token and to specify the environment (`sandbox` or `production`).
 
-⚠️ Security Warning: NEVER hardcode your apiToken directly in your code. Use environment variables (e.g., via a .env file and the dotenv package) to keep your credentials secure.
+**Security Warning:** NEVER hardcode your `apiToken` directly in your code. Use environment variables (e.g., via a `.env` file and the `dotenv` package) to keep your credentials secure.
 
-Install dotenv (if you haven't already):
+Install `dotenv` (if you haven't already):
 
+```bash
 npm install dotenv
-# or
-yarn add dotenv
+```
 
+Create a `.env` file in your project root (add it to your `.gitignore`!):
 
-
-
-Create a .env file in your project root (add it to your .gitignore!):
-
+```bash
 # .env
 PAWAPAY_API_TOKEN=your_sandbox_or_production_api_token_here
 PAWAPAY_ENV=sandbox # or 'production'
-
+```
 
 Load environment variables at the start of your application:
 
+```ts
 import dotenv from 'dotenv';
 dotenv.config();
+```
 
+## Usage
 
+### 1. Import and Initialize Client
 
-Usage
-1. Import and Initialize Client
-import PawaPayClient from 'pawapay-nodejs-sdk'; // Or: const PawaPayClient = require('pawapay-nodejs-sdk').default;
+```ts
+import PawaPayClient from 'pawapay-nodejs-sdk';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
 const apiKey = process.env.PAWAPAY_API_TOKEN;
-const environment = process.env.PAWAPAY_ENV as 'sandbox' | 'production' || 'sandbox'; // Default to sandbox
+const environment = (process.env.PAWAPAY_ENV as 'sandbox' | 'production') || 'sandbox';
 
 if (!apiKey) {
-  throw new Error("PAWAPAY_API_TOKEN not found in environment variables.");
+  throw new Error('PAWAPAY_API_TOKEN not found in environment variables.');
 }
 
 const pawaPayClient = new PawaPayClient({
@@ -83,156 +87,153 @@ const pawaPayClient = new PawaPayClient({
   baseUrl: environment, // Use 'sandbox' or 'production' shortcut
   // Or provide the full URL: baseUrl: 'https://api.sandbox.pawapay.io'
 });
+```
 
+### 2. Requesting a Deposit
 
-2. Requesting a Deposit (✅ Implemented)
-import { PawaPayDepositPayload } from 'pawapay-nodejs-sdk/dist/types'; // Import specific types if needed
+```ts
+import { PawaPayDepositPayload } from 'pawapay-nodejs-sdk/dist/types';
 
 async function makeDeposit() {
   const depositPayload: PawaPayDepositPayload = {
-    // depositId: 'your-custom-uuid-v4', // Optional: SDK generates if omitted
-    amount: "5.00", // Amount as string
-    currency: "ZMW", // Zambia Kwacha example
-    country: "ZMB",   // Zambia alpha-3 code example
-    correspondent: "MTN_MOMO_ZMB", // Specific mobile money operator code
+    // depositId: 'your-custom-uuid-v4', // Optional: SDK generates one if omitted
+    amount: '5.00', // Amount as string
+    currency: 'ZMW', // Zambian Kwacha example
     payer: {
-      type: "MSISDN",
-      address: {
-        value: "260763456789", // Payer's phone number (use valid sandbox number)
+      type: 'MMO',
+      accountDetails: {
+        phoneNumber: '260763456789', // Digits only, no separators
+        provider: 'MTN_MOMO_ZMB', // Mobile money operator code
       },
     },
-    statementDescription: "SDK Deposit Test", // 4-22 characters
-    // customerTimestamp: new Date().toISOString(), // Optional: SDK generates if omitted
-    metadata: [{ fieldName: "orderId", fieldValue: "sdk-order-123" }] // Optional
+    customerMessage: 'SDK Deposit Test', // 4-22 chars, alphanumeric + spaces
+    metadata: [{ orderId: 'sdk-order-123' }], // Optional
   };
-
-  console.log(`Attempting deposit in ${environment} environment...`);
 
   try {
     const response = await pawaPayClient.requestDeposit(depositPayload);
-    console.log('Deposit Request Successful:', response);
-    // response object structure: { depositId: string, status: 'ACCEPTED' | ..., created: string, rejectionReason?: ... }
 
     if (response.status === 'ACCEPTED') {
       console.log(`Deposit ${response.depositId} accepted for processing.`);
-      // You would typically store the depositId and wait for a callback or poll status later
+      // Poll status or wait for a callback to see it move to COMPLETED/FAILED
+      const status = await pawaPayClient.checkDepositStatus(response.depositId);
+      console.log(status);
     } else if (response.status === 'REJECTED') {
-      console.warn(`Deposit Rejected: ${response.rejectionReason?.code} - ${response.rejectionReason?.message}`);
-    } else {
-      console.log(`Deposit Status: ${response.status}`);
+      console.warn(`Deposit Rejected: ${response.failureReason?.failureCode} - ${response.failureReason?.failureMessage}`);
     }
-
   } catch (error) {
     console.error('Deposit Request Failed:', error instanceof Error ? error.message : String(error));
-    // Error message often contains details from PawaPay if available
   }
 }
+```
 
-makeDeposit();
+### 3. Requesting a Payout
 
-
-
-3. Requesting a Payout (⏳ Planned Feature - Not Yet Implemented)
+```ts
 import { PawaPayPayoutPayload } from 'pawapay-nodejs-sdk/dist/types';
 
 async function makePayout() {
-  // --- THIS FUNCTIONALITY IS PLANNED ---
-  console.warn("Payout functionality is not yet implemented in this SDK version.");
-
   const payoutPayload: PawaPayPayoutPayload = {
-    // payoutId: 'your-custom-uuid-v4', // Optional
-    amount: "3.50",
-    currency: "ZMW",
-    country: "ZMB",
-    correspondent: "AIRTEL_OAPI_ZMB", // Example correspondent
+    amount: '3.50',
+    currency: 'ZMW',
     recipient: {
-      type: "MSISDN",
-      address: {
-        value: "26077xxxxxxx", // Recipient's phone number
+      type: 'MMO',
+      accountDetails: {
+        phoneNumber: '260771234567',
+        provider: 'AIRTEL_OAPI_ZMB',
       },
     },
-    statementDescription: "SDK Payout Test",
-    // customerTimestamp: new Date().toISOString(), // Optional
-    metadata: [{ fieldName: "payoutRef", fieldValue: "sdk-payout-456" }] // Optional
+    customerMessage: 'SDK Payout Test',
+    metadata: [{ payoutRef: 'sdk-payout-456' }],
   };
 
-  console.log(`Attempting payout in ${environment} environment...`);
+  const response = await pawaPayClient.requestPayout(payoutPayload);
+  console.log(response.status); // 'ACCEPTED' | 'ENQUEUED' | 'REJECTED' | 'DUPLICATE_IGNORED'
 
-  try {
-    // const response = await pawaPayClient.requestPayout(payoutPayload); // Uncomment when implemented
-    // console.log('Payout Request Response:', response);
-    // Handle response status ('ACCEPTED', 'ENQUEUED', 'REJECTED', 'DUPLICATE_IGNORED')
-  } catch (error) {
-     console.error('Payout Request Failed:', error instanceof Error ? error.message : String(error));
-  }
+  const status = await pawaPayClient.checkPayoutStatus(response.payoutId);
+  console.log(status);
+
+  // If it's still ENQUEUED and you need to stop it:
+  // await pawaPayClient.cancelEnqueuedPayout(response.payoutId);
 }
+```
 
-// makePayout(); // Call when implemented
+### 4. Requesting a Refund
 
-
-
-
-4. Requesting a Refund (⏳ Planned Feature - Not Yet Implemented)
+```ts
 import { PawaPayRefundPayload } from 'pawapay-nodejs-sdk/dist/types';
 
 async function makeRefund() {
-  // --- THIS FUNCTIONALITY IS PLANNED ---
-  console.warn("Refund functionality is not yet implemented in this SDK version.");
-
-  // !!! IMPORTANT: Replace with an ACTUAL depositId from a successful deposit in your sandbox !!!
-  const depositIdToRefund = process.env.PAWAPAY_DEPOSIT_ID_TO_REFUND || 'replace-with-real-successful-deposit-id';
-
-  if (depositIdToRefund.startsWith('replace-with')) {
-    console.error("Error: Please set PAWAPAY_DEPOSIT_ID_TO_REFUND in your .env file with a valid deposit ID for testing refunds.");
-    return;
-  }
-
   const refundPayload: PawaPayRefundPayload = {
-    // refundId: 'your-custom-uuid-v4', // Optional
-    depositId: depositIdToRefund,
-    // amount: "1.00", // Optional: Omit for full refund, specify for partial
-    metadata: [{ fieldName: "reason", fieldValue: "Customer request (SDK Test)" }] // Optional
+    depositId: 'an-existing-completed-deposit-id',
+    amount: '1.00', // Partial or full refund amount
+    currency: 'ZMW',
+    metadata: [{ reason: 'Customer request (SDK Test)' }],
   };
 
-  console.log(`Attempting refund for deposit ${depositIdToRefund} in ${environment} environment...`);
+  const response = await pawaPayClient.requestRefund(refundPayload);
+  console.log(response.status);
 
-  try {
-    // const response = await pawaPayClient.requestRefund(refundPayload); // Uncomment when implemented
-    // console.log('Refund Request Response:', response);
-    // Handle response status ('ACCEPTED', 'REJECTED', 'DUPLICATE_IGNORED')
-  } catch (error) {
-    console.error('Refund Request Failed:', error instanceof Error ? error.message : String(error));
-  }
+  const status = await pawaPayClient.checkRefundStatus(response.refundId);
+  console.log(status);
 }
+```
 
-// makeRefund(); // Call when implemented
+### 5. Toolkit: Predict Provider, Active Configuration, Wallet Balances
 
+```ts
+// Predict which mobile money operator a phone number belongs to
+const prediction = await pawaPayClient.predictProvider('+260763456789');
+console.log(prediction); // { country: 'ZMB', provider: 'MTN_MOMO_ZMB', phoneNumber: '260763456789' }
 
+// See which countries/providers/currencies are active on your account
+const activeConfiguration = await pawaPayClient.getActiveConfiguration({ country: 'ZMB', operationType: 'DEPOSIT' });
 
-Error Handling
+// Check your wallet balances
+const balances = await pawaPayClient.getWalletBalances('ZMB');
+```
 
-The SDK methods (requestDeposit, requestPayout, requestRefund) return Promises that will reject if:
+See the [`examples/`](./examples) directory for complete, runnable scripts.
 
-There's a network error communicating with the PawaPay API.
+## Error Handling
 
-The PawaPay API returns a non-successful HTTP status code (e.g., 4xx, 5xx).
+Every client method returns a Promise that rejects if:
 
-Use standard try...catch blocks to handle these errors. The error thrown by the SDK will attempt to include details from the PawaPay response when available (like status code and rejection reasons).
+* There's a network error communicating with the pawaPay API.
+* The pawaPay API returns a non-successful HTTP status code (e.g., 4xx, 5xx).
 
-Contributing
+Use standard `try...catch` blocks to handle these errors. The thrown error's `message` includes pawaPay's `failureReason.failureCode`/`failureMessage` when available.
 
-Contributions are welcome! If you find a bug, have a feature request, or want to contribute code (especially for the planned Payout/Refund features!), please feel free to:
+## Migrating from 1.x
 
-Open an issue on the GitHub repository.
+pawaPay's Merchant API moved to `/v2`, and v1 is no longer documented. This SDK's `2.0.0` release follows that move, which changes several shapes from `1.x`:
 
-Fork the repository, make your changes, and submit a pull request.
+| Area | 1.x | 2.x |
+| --- | --- | --- |
+| Deposit endpoint | `POST /deposits` | `POST /v2/deposits` |
+| Payer/recipient | `{ type: "MSISDN", address: { value } }` | `{ type: "MMO", accountDetails: { phoneNumber, provider } }` |
+| Correspondent field | `correspondent` | `accountDetails.provider` |
+| Country field | `country` (required on request) | derived server-side; only present in status-check responses |
+| Description field | `statementDescription` | `customerMessage` |
+| Timestamp field | `customerTimestamp` (client-supplied) | removed; `created` comes from the server response only |
+| Rejection details | `rejectionReason` | `failureReason` (`failureCode`/`failureMessage`) |
+| Status checks | not available | `checkDepositStatus`, `checkPayoutStatus`, `checkRefundStatus` |
 
-Please ensure code follows existing style and includes tests where appropriate (tests are also a planned addition!).
+`requestPayout` and `requestRefund` are now fully implemented (in 1.x they called the API but were mislabeled as "not yet implemented").
 
-License
+## Contributing
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+Contributions are welcome! If you find a bug, have a feature request, or want to help with the planned callback/bulk-payout support, please feel free to:
 
-Disclaimer
+* Open an issue on the GitHub repository.
+* Fork the repository, make your changes, and submit a pull request.
 
-This is an unofficial SDK developed independently and is not directly affiliated with or endorsed by PawaPay. Please refer to the official PawaPay documentation for authoritative information.
+Please ensure code follows the existing style and includes tests (`npm test`).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
+## Disclaimer
+
+This is an unofficial SDK developed independently and is not directly affiliated with or endorsed by PawaPay. Please refer to the [official PawaPay documentation](https://docs.pawapay.io/) for authoritative information.

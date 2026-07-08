@@ -23,30 +23,31 @@ async function runPayoutExample() {
     // payoutId: 'provide-one-or-let-sdk-generate', // Optional
     amount: "3.50", // Example amount
     currency: "ZMW",
-    country: "ZMB",
-    correspondent: "AIRTEL_OAPI_ZMB", // Use a valid sandbox correspondent
     recipient: {
-      type: "MSISDN",
-      address: {
-        value: "26077xxxxxxx", // Use a different valid PawaPay sandbox number
+      type: "MMO",
+      accountDetails: {
+        phoneNumber: "260771234567", // Use a different valid PawaPay sandbox number
+        provider: "AIRTEL_OAPI_ZMB", // Use a valid sandbox provider
       },
     },
-    statementDescription: "SDK Test Payout",
-    // customerTimestamp: new Date().toISOString(), // Optional
-    metadata: [{fieldName: "payoutRef", fieldValue: "po-sdk-456"}]
+    customerMessage: "SDK Test Payout",
+    metadata: [{ payoutRef: "po-sdk-456" }],
   };
 
   console.log(`Attempting payout in ${environment} environment...`);
 
   try {
-    // NOTE: This call will likely fail until the method is fully implemented
     const response = await client.requestPayout(payoutPayload);
     console.log('Payout Request Response:', response);
-     if(response.status === 'REJECTED') {
-        console.warn('Payout Rejected:', response.rejectionReason);
-     } else {
-        console.log(`Payout Status: ${response.status}`);
-     }
+
+    if (response.status === 'REJECTED') {
+      console.warn('Payout Rejected:', response.failureReason);
+      return;
+    }
+
+    console.log(`Payout ${response.payoutId} accepted, checking status...`);
+    const status = await client.checkPayoutStatus(response.payoutId);
+    console.log('Payout Status:', status);
   } catch (error) {
     console.error('Payout Failed:', error instanceof Error ? error.message : String(error));
   }
